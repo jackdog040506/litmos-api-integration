@@ -1,0 +1,47 @@
+package test.io;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import test.io.api.litmos.response.TeamsInfo;
+import test.io.entity.ThirdPartyBinding;
+import test.io.entity.ThirdPartyBindingPK;
+import test.io.entity.ThirdPartyProviderScopes;
+import test.io.repository.ThirdPartyBindingRepository;
+import test.io.service.LitmosService;
+
+@SpringBootTest
+public class LitmosTeamIntegrationTest extends TestBase {
+	@Autowired
+	ThirdPartyBindingRepository thirdPartyBindingRepository;
+	@Autowired
+	LitmosService litmosService;
+
+	public static final String TEAM_ID = "12138114";
+	public static final String TEAM = "PCXECEK7vf01";
+
+	@BeforeEach
+	public void before() {
+		ThirdPartyProviderScopes scope = ThirdPartyProviderScopes.LITMOS_TEAM;
+		ThirdPartyBindingPK pk = new ThirdPartyBindingPK();
+		pk.setIdentifyType(scope.getIdentifyType());
+		pk.setIdentifyValue(TEAM_ID);
+		pk.setProviderType(scope.getProviderType());
+		ThirdPartyBinding thirdPartyBinding = new ThirdPartyBinding();
+		thirdPartyBinding.setId(pk);
+		thirdPartyBinding.setIdentifyThirdParty(TEAM);
+		thirdPartyBinding.setDisplayName(TEAM_ID);
+		thirdPartyBinding.setIsDelete("N");
+		thirdPartyBindingRepository.save(thirdPartyBinding);
+
+	}
+
+	@Test
+	public void test_getTeamInfoByTeamId() {
+		TeamsInfo teamsInfo = litmosService.getTeamInfoByTeamId(TEAM_ID);
+		assertThat(teamsInfo.getId()).isEqualTo(TEAM);
+	}
+
+}

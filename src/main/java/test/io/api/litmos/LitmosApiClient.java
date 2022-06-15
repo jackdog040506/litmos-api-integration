@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 
@@ -32,6 +34,7 @@ import test.io.api.litmos.response.TeamsInfo;
 import test.io.api.litmos.response.UserInfoWithCourses;
 import test.io.config.LitmosConfig;
 
+@Component
 @Slf4j
 public class LitmosApiClient {
 
@@ -46,8 +49,13 @@ public class LitmosApiClient {
 		okHttpClientBuilder.addInterceptor(new Interceptor() {
 			@Override
 			public Response intercept(Chain chain) throws IOException {
-				Request request = chain.request().newBuilder().addHeader("apikey", litmosConfig.getToken())
-						.addHeader("Content-Type", "application/json").addHeader("Accept", "application/json").build();
+				Request request = chain
+						.request()
+							.newBuilder()
+							.addHeader("apikey", litmosConfig.getApiKey())
+							.addHeader("Content-Type", "application/json")
+							.addHeader("Accept", "application/json")
+							.build();
 				return chain.proceed(request);
 			}
 		});
@@ -60,12 +68,16 @@ public class LitmosApiClient {
 		OM.setPropertyNamingStrategy(PropertyNamingStrategies.UPPER_CAMEL_CASE);
 		userApi = new Retrofit.Builder().baseUrl(litmosConfig.getUrl()).client(httpClient)
 //				.addConverterFactory(JaxbConverterFactory.create())
-				.addConverterFactory(ScalarsConverterFactory.create())
-				.addConverterFactory(JacksonConverterFactory.create(OM)).build().create(LitmosUserApi.class);
+					.addConverterFactory(ScalarsConverterFactory.create())
+					.addConverterFactory(JacksonConverterFactory.create(OM))
+					.build()
+					.create(LitmosUserApi.class);
 		courseApi = new Retrofit.Builder().baseUrl(litmosConfig.getUrl()).client(httpClient)
 //				.addConverterFactory(JaxbConverterFactory.create())
-				.addConverterFactory(ScalarsConverterFactory.create())
-				.addConverterFactory(JacksonConverterFactory.create(OM)).build().create(LitmosCourseApi.class);
+					.addConverterFactory(ScalarsConverterFactory.create())
+					.addConverterFactory(JacksonConverterFactory.create(OM))
+					.build()
+					.create(LitmosCourseApi.class);
 	}
 
 	public <T> T executeUser(Function<LitmosUserApi, Call<T>> func) {
@@ -188,7 +200,7 @@ public class LitmosApiClient {
 		}
 	}
 
-	public List<IdWrapper> writeTeamsToUser(String userId, List<String> teamsIds, String source) {
+	public List<IdWrapper> assignUserToTeams(String userId, List<String> teamsIds, String source) {
 
 		// Create FileWriter object.
 		StringWriter sw = new StringWriter();

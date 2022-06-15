@@ -24,5 +24,6 @@ public class CourseInfo {
 	private Integer OriginalId;// ": "integer",
 	private String ResultId;// ": "string [max length 50]",
 	private String AccessTillDate;// ": "YYYY-MM-DDTHH:MM:SS.SSS" Certificate
+	private String UserId;
 
 }

@@ -18,6 +18,18 @@
 		<retrofit.version>2.9.0</retrofit.version>
 	</properties>
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -65,9 +77,22 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.1.0</version>
+			</plugin>
+		</plugins>
+	</build>
 </project>
