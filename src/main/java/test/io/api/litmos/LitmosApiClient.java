@@ -29,8 +29,10 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
+import test.io.api.litmos.request.CreateUserRequest;
 import test.io.api.litmos.request.IdWrapper;
 import test.io.api.litmos.response.TeamsInfo;
+import test.io.api.litmos.response.UserInfoAdvanced;
 import test.io.api.litmos.response.UserInfoWithCourses;
 import test.io.config.LitmosConfig;
 
@@ -123,6 +125,60 @@ public class LitmosApiClient {
 		}
 	}
 
+	public UserInfoAdvanced createUser(CreateUserRequest createUser, String source) {
+		// Create FileWriter object.
+		StringWriter sw = new StringWriter();
+		try {
+			// Get XMLOutputFactory instance.
+			XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
+			XMLStreamWriter xmlStreamWriter = xmlOutputFactory.createXMLStreamWriter(sw);
+			xmlStreamWriter.writeStartElement("User");
+			xmlStreamWriter.writeStartElement("UserName");
+			xmlStreamWriter.writeCharacters(createUser.getUserName());
+			xmlStreamWriter.writeEndElement();
+			xmlStreamWriter.writeStartElement("FirstName");
+			xmlStreamWriter.writeCharacters(createUser.getFirstName());
+			xmlStreamWriter.writeEndElement();
+			xmlStreamWriter.writeStartElement("LastName");
+			xmlStreamWriter.writeCharacters(createUser.getLastName());
+			xmlStreamWriter.writeEndElement();
+			xmlStreamWriter.writeStartElement("FullName");
+			xmlStreamWriter.writeCharacters(createUser.getFullName());
+			xmlStreamWriter.writeEndElement();
+			xmlStreamWriter.writeStartElement("Email");
+			xmlStreamWriter.writeCharacters(createUser.getEmail());
+			xmlStreamWriter.writeEndElement();
+			xmlStreamWriter.writeStartElement("AccessLevel");
+			xmlStreamWriter.writeCharacters(createUser.getAccessLevel());
+			xmlStreamWriter.writeEndElement();
+			xmlStreamWriter.writeStartElement("DisableMessages");
+			xmlStreamWriter.writeCharacters(createUser.getDisableMessages());
+			xmlStreamWriter.writeEndElement();
+			xmlStreamWriter.writeStartElement("Active");
+			xmlStreamWriter.writeCharacters(createUser.getActive());
+			xmlStreamWriter.writeEndElement();
+			xmlStreamWriter.writeStartElement("LastLogin");
+			xmlStreamWriter.writeEndElement();
+			xmlStreamWriter.writeStartElement("LoginKey");
+			xmlStreamWriter.writeEndElement();
+			xmlStreamWriter.writeStartElement("IsCustomUsername");
+			xmlStreamWriter.writeCharacters(createUser.getIsCustomUsername());
+			xmlStreamWriter.writeEndElement();
+			xmlStreamWriter.writeStartElement("SkipFirstLogin");
+			xmlStreamWriter.writeCharacters(createUser.getSkipFirstLogin());
+			xmlStreamWriter.writeEndElement();
+			xmlStreamWriter.writeStartElement("TimeZone");
+			xmlStreamWriter.writeCharacters(createUser.getTimeZone());
+			xmlStreamWriter.writeEndElement();
+			xmlStreamWriter.writeEndDocument();
+			RequestBody requestBody = RequestBody.create(sw.toString(), okhttp3.MediaType.parse("text/xml"));
+			return execute(userApi.createUser(requestBody, source));
+		} catch (Exception e) {
+			log.error("createUser error", e);
+			throw new RuntimeException(e);
+		}
+	}
+
 	public String assignCoursesToUser(String userId, List<String> courseIds, String source) {
 		// Create FileWriter object.
 //		StringWriter sw = new StringWriter();
@@ -200,7 +256,7 @@ public class LitmosApiClient {
 		}
 	}
 
-	public List<IdWrapper> assignUserToTeams(String userId, List<String> teamsIds, String source) {
+	public String assignUserToTeams(String userId, List<String> teamsIds, String source) {
 
 		// Create FileWriter object.
 		StringWriter sw = new StringWriter();
@@ -221,7 +277,7 @@ public class LitmosApiClient {
 			return execute(userApi.addTeamsToUser(userId, requestBody, source));
 		} catch (Exception e) {
 			log.error("xml parsing error", e);
-			return new ArrayList<>();
+			return "";
 		}
 	}
 
@@ -317,4 +373,5 @@ public class LitmosApiClient {
 			return "error";
 		}
 	}
+
 }

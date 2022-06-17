@@ -10,7 +10,6 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import test.io.api.litmos.request.IdWrapper;
 import test.io.api.litmos.response.TeamsInfo;
 import test.io.api.litmos.response.UserInfo;
 import test.io.api.litmos.response.UserInfoAdvanced;
@@ -25,7 +24,6 @@ public interface LitmosUserApi {
 	Call<List<UserInfo>> getAllUser(@Query("source") String source);
 
 	/**
-	 * 
 	 * @param source
 	 * @param search
 	 * @return
@@ -33,6 +31,31 @@ public interface LitmosUserApi {
 	@GET("users")
 	Call<List<UserInfo>> getAllUser(@Query("source") String source, @Query("search") String search);
 
+	/**
+	 * Mandatory list of fields:
+	 * <User>
+	 * <Id>[Mandatory for PUT]</Id>
+	 * <UserName>MyUserName</UserName>
+	 * <FirstName>MyFirstName</FirstName>
+	 * <LastName>MyLastName</LastName>
+	 * <FullName></FullName>
+	 * <Email>testing124@test.com</Email>
+	 * <AccessLevel>Learner</AccessLevel>
+	 * <DisableMessages>false</DisableMessages>
+	 * <Active>true</Active>
+	 * <LastLogin></LastLogin>
+	 * <LoginKey></LoginKey>
+	 * <IsCustomUsername>true</IsCustomUsername>
+	 * <SkipFirstLogin>false</SkipFirstLogin>
+	 * <TimeZone></TimeZone>
+	 * </User>
+	 * @param requestBody
+	 * @param source
+	 * @return
+	 */
+	@POST("users")
+	Call<UserInfoAdvanced> createUser(@Body RequestBody requestBody,@Query("source") String source);
+	
 	/**
 	 * 
 	 * @param userId
@@ -79,7 +102,7 @@ public interface LitmosUserApi {
 	 * @return
 	 */
 	@POST("users/{userId}/teams")
-	Call<List<IdWrapper>> addTeamsToUser(@Path("userId") String userId, @Body RequestBody requestBody,
+	Call<String> addTeamsToUser(@Path("userId") String userId, @Body RequestBody requestBody,
 			@Query("source") String source);
 
 	/**

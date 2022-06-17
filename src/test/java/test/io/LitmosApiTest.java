@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import test.io.api.litmos.LitmosApiClient;
+import test.io.api.litmos.request.CreateUserRequest;
 import test.io.api.litmos.response.TeamsInfo;
 import test.io.config.LitmosConfig;
 
@@ -35,6 +36,17 @@ public class LitmosApiTest {
 	@Test
 	public void testUser() {
 		System.out.print(litmosApiClient.executeUser(api -> api.getAllUser(DEFAULT)));
+	}
+
+	@Test
+	public void test_createUser() {
+		CreateUserRequest createUser = new CreateUserRequest();
+		createUser.setUserName("testcreatebyapi");
+		createUser.setFirstName("測試");
+		createUser.setLastName("API建使用者");
+		createUser.setFullName("FULLNAME");
+		createUser.setEmail("testcreatebyapi@test.com");
+		System.out.print(litmosApiClient.createUser(createUser, DEFAULT));
 	}
 
 	@Test
